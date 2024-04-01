@@ -29,13 +29,6 @@ class API {
     return json;
   }
 
-  async getRelease() {
-    return this.call({
-      method: 'get',
-      path: '/release',
-    });
-  }
-
   async getLang() {
     return this.call({
       method: 'get',
@@ -54,28 +47,6 @@ class API {
     return this.call({
       method: 'get',
       path: '/ui-chart-type',
-    });
-  }
-
-  async getSession() {
-    return this.call({
-      method: 'get',
-      path: '/session',
-    });
-  }
-
-  async createSession({ password }) {
-    return this.call({
-      method: 'post',
-      path: '/session',
-      body: { password },
-    });
-  }
-
-  async deleteSession() {
-    return this.call({
-      method: 'delete',
-      path: '/session',
     });
   }
 

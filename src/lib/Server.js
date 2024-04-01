@@ -1,12 +1,9 @@
 'use strict';
 
-const bcrypt = require('bcryptjs');
-const crypto = require('node:crypto');
 const { createServer } = require('node:http');
 const { stat, readFile } = require('node:fs/promises');
 const { join } = require('node:path');
 
-const expressSession = require('express-session');
 const debug = require('debug')('Server');
 
 const {
@@ -14,7 +11,6 @@ const {
   createError,
   createRouter,
   defineEventHandler,
-  fromNodeMiddleware,
   getRouterParam,
   toNodeListener,
   readBody,
@@ -28,7 +24,6 @@ const {
   PORT,
   WEBUI_HOST,
   RELEASE,
-  PASSWORD,
   LANG,
   UI_TRAFFIC_STATS,
   UI_CHART_TYPE,
@@ -39,12 +34,6 @@ module.exports = class Server {
   constructor() {
     const app = createApp();
     this.app = app;
-
-    app.use(fromNodeMiddleware(expressSession({
-      secret: crypto.randomBytes(256).toString('hex'),
-      resave: true,
-      saveUninitialized: true,
-    })));
 
     const router = createRouter();
     app.use(router);
@@ -70,81 +59,10 @@ module.exports = class Server {
         return `"${UI_CHART_TYPE}"`;
       }))
 
-      // Authentication
-      .get('/api/session', defineEventHandler((event) => {
-        const requiresPassword = !!process.env.PASSWORD;
-        const authenticated = requiresPassword
-          ? !!(event.node.req.session && event.node.req.session.authenticated)
-          : true;
-
-        return {
-          requiresPassword,
-          authenticated,
-        };
-      }))
-      .post('/api/session', defineEventHandler(async (event) => {
-        const { password } = await readBody(event);
-
-        if (typeof password !== 'string') {
-          throw createError({
-            status: 401,
-            message: 'Missing: Password',
-          });
-        }
-
-        if (password !== PASSWORD) {
-          throw createError({
-            status: 401,
-            message: 'Incorrect Password',
-          });
-        }
-
-        event.node.req.session.authenticated = true;
-        event.node.req.session.save();
-
-        debug(`New Session: ${event.node.req.session.id}`);
-
-        return { succcess: true };
-      }));
-
-    // WireGuard
-    app.use(
-      fromNodeMiddleware((req, res, next) => {
-        if (!PASSWORD || !req.url.startsWith('/api/')) {
-          return next();
-        }
-
-        if (req.session && req.session.authenticated) {
-          return next();
-        }
-
-        if (req.url.startsWith('/api/') && req.headers['authorization']) {
-          if (bcrypt.compareSync(req.headers['authorization'], bcrypt.hashSync(PASSWORD, 10))) {
-            return next();
-          }
-          return res.status(401).json({
-            error: 'Incorrect Password',
-          });
-        }
-
-        return res.status(401).json({
-          error: 'Not Logged In',
-        });
-      }),
-    );
-
     const router2 = createRouter();
     app.use(router2);
 
     router2
-      .delete('/api/session', defineEventHandler((event) => {
-        const sessionId = event.node.req.session.id;
-
-        event.node.req.session.destroy();
-
-        debug(`Deleted Session: ${sessionId}`);
-        return { success: true };
-      }))
       .get('/api/wireguard/client', defineEventHandler(() => {
         return WireGuard.getClients();
       }))

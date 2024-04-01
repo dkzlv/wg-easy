@@ -42,10 +42,7 @@ RUN update-alternatives --install /sbin/iptables iptables /sbin/iptables-legacy 
 
 # Expose Ports
 EXPOSE 51820/udp
-EXPOSE 51821/tcp
-
-# Set Environment
-ENV DEBUG=Server,WireGuard
+EXPOSE 80
 
 # Run Web UI
 WORKDIR /app

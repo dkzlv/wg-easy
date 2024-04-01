@@ -49,11 +49,6 @@ new Vue({
   },
   i18n,
   data: {
-    authenticated: null,
-    authenticating: false,
-    password: null,
-    requiresPassword: null,
-
     clients: null,
     clientsPersist: {},
     clientDelete: null,
@@ -169,14 +164,8 @@ new Vue({
     async refresh({
       updateCharts = false,
     } = {}) {
-      if (!this.authenticated) return;
-
       const clients = await this.api.getClients();
       this.clients = clients.map((client) => {
-        if (client.name.includes('@') && client.name.includes('.')) {
-          client.avatar = `https://gravatar.com/avatar/${sha256(client.name.toLowerCase().trim())}.jpg`;
-        }
-
         if (!this.clientsPersist[client.id]) {
           this.clientsPersist[client.id] = {};
           this.clientsPersist[client.id].transferRxHistory = Array(50).fill(0);
@@ -189,7 +178,6 @@ new Vue({
         // client.transferRx = this.clientsPersist[client.id].transferRxPrevious + Math.random() * 1000;
         // client.transferTx = this.clientsPersist[client.id].transferTxPrevious + Math.random() * 1000;
         // client.latestHandshakeAt = new Date();
-        // this.requiresPassword = true;
 
         this.clientsPersist[client.id].transferRxCurrent = client.transferRx - this.clientsPersist[client.id].transferRxPrevious;
         this.clientsPersist[client.id].transferRxPrevious = client.transferRx;
@@ -229,42 +217,6 @@ new Vue({
 
         return client;
       });
-    },
-    login(e) {
-      e.preventDefault();
-
-      if (!this.password) return;
-      if (this.authenticating) return;
-
-      this.authenticating = true;
-      this.api.createSession({
-        password: this.password,
-      })
-        .then(async () => {
-          const session = await this.api.getSession();
-          this.authenticated = session.authenticated;
-          this.requiresPassword = session.requiresPassword;
-          return this.refresh();
-        })
-        .catch((err) => {
-          alert(err.message || err.toString());
-        })
-        .finally(() => {
-          this.authenticating = false;
-          this.password = null;
-        });
-    },
-    logout(e) {
-      e.preventDefault();
-
-      this.api.deleteSession()
-        .then(() => {
-          this.authenticated = false;
-          this.clients = null;
-        })
-        .catch((err) => {
-          alert(err.message || err.toString());
-        });
     },
     createClient() {
       const name = this.clientCreateName;
@@ -332,19 +284,11 @@ new Vue({
     this.setTheme(this.uiTheme);
 
     this.api = new API();
-    this.api.getSession()
-      .then((session) => {
-        this.authenticated = session.authenticated;
-        this.requiresPassword = session.requiresPassword;
-        this.refresh({
-          updateCharts: this.updateCharts,
-        }).catch((err) => {
-          alert(err.message || err.toString());
-        });
-      })
-      .catch((err) => {
-        alert(err.message || err.toString());
-      });
+    this.refresh({
+      updateCharts: this.updateCharts,
+    }).catch((err) => {
+      alert(err.message || err.toString());
+    });
 
     setInterval(() => {
       this.refresh({
@@ -367,37 +311,6 @@ new Vue({
       .catch(() => {
         this.uiChartType = 0;
       });
-
-    Promise.resolve().then(async () => {
-      const lang = await this.api.getLang();
-      if (lang !== localStorage.getItem('lang') && i18n.availableLocales.includes(lang)) {
-        localStorage.setItem('lang', lang);
-        i18n.locale = lang;
-      }
-
-      const currentRelease = await this.api.getRelease();
-      const latestRelease = await fetch('https://wg-easy.github.io/wg-easy/changelog.json')
-        .then((res) => res.json())
-        .then((releases) => {
-          const releasesArray = Object.entries(releases).map(([version, changelog]) => ({
-            version: parseInt(version, 10),
-            changelog,
-          }));
-          releasesArray.sort((a, b) => {
-            return b.version - a.version;
-          });
-
-          return releasesArray[0];
-        });
-
-      console.log(`Current Release: ${currentRelease}`);
-      console.log(`Latest Release: ${latestRelease.version}`);
-
-      if (currentRelease >= latestRelease.version) return;
-
-      this.currentRelease = currentRelease;
-      this.latestRelease = latestRelease;
-    }).catch((err) => console.error(err));
   },
   computed: {
     chartOptionsTX() {

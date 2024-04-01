@@ -1,0 +1,29 @@
+{
+  "app_authentication": {
+    "admin": [
+      "/"
+    ]
+  },
+  "b64icon": "data:image/webp;base64,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",
+  "compose_config": "version: \"3.8\"\n\nservices:\n  vpn:\n    image: dkzlv/vpn:0.1.3\n    volumes:\n      - etc_wireguard:/etc/wireguard\n    ports:\n      - \"51820:51820/udp\"\n      - 80\n    cap_add:\n      - NET_ADMIN\n      - SYS_MODULE\n    sysctls:\n      - net.ipv4.ip_forward=1\n      - net.ipv4.conf.all.src_valid_mark=1\n\nvolumes:\n  etc_wireguard:\n",
+  "description": "Reimplementation of WG Easy and Wireguard service",
+  "linkinstallsource": {
+    "author_email": "me@dkzlv.com",
+    "author_name": "dkzlv",
+    "author_site": "https://dkzlv.com/",
+    "download_url": "https://gist.githubusercontent.com/dkzlv/bad5191caf180404175ea3fdd1cbb70f/raw/ef9d5d740107a7a2b7d4f7589e06a6de66e3d55e/gistfile1.json"
+  },
+  "networking": {
+    "ports": [
+      51820
+    ],
+    "subdomain_suggestion": "vpn",
+    "permissions": {
+      "value": "all",
+      "help": "VPN needs all access"
+    }
+  },
+  "title": "Mikasa VPN",
+  "version": "0.1",
+  "privileged_signature": "-----BEGIN PGP SIGNATURE-----\n\niQIzBAABCAAdFiEEUrK73l3o0mrQrOjapeRJo1haGp4FAmYK+wwACgkQpeRJo1ha\nGp7pbA//Ru0ErmfF0aJLqfAIa8dCHpJIWuzhrYb/FPwO+Bt/HH0ViJDpVkcuIDA8\nvHdCxy+XGbZjF/5Aez9H9nCXxga5wVWxjZEYmreDU00JaYXPvaefUVjXoo3VF3a5\nUXM46AqlUCA6grm5pMYLToB6PLD2Mca/t0Eb0NWQo90/bNtOrSF+uMjaQojKijOQ\nj0jb9Dcu7C2pxdLEuLg8wrKre744CEkRxaoDQAweGatWGx0j5rTbAM+7VlOrhZCh\ngIvOhz9rr66FithmJ7FzlRNRxho21v/sjRlTm1LxZhSVJ12O9PoTwr/JLuG1VfkS\n1pN+HPQT9gtYwmmQ1RvHgpyVnd4In6XcL1HHnKO1bg3oJxML2BTXuMGOnHWwqaQ5\n4X9oBgjaPFMxjibmodymh8b2pAjFEfuU74qGtv+waUQidDe/03FGYfYfr/wjNdJ+\nQbDgit++S+G8qsOsMUGIjWM/LCwu1/B7E7A2Ngd814j06QS+1U6SM71A8nfGKnH7\nl/z+YI3t3zkdPPvNTC6IxCcoT7YjfFQvisifsApzHlOBWR8NV09IeiFwoZC2m0vL\n3K1aWoQ/L1Yt4jYGqiBR4fEMr/gPIeMcE5msCyqCTDWGO8M9sEvAp3E6xJXzAEvu\neBQDudiisw412+YQm3KL+0IwNlfvzkBzeFz9ZnyTDSgqP8RaU8E=\n=o3B/\n-----END PGP SIGNATURE-----\n"
+}
